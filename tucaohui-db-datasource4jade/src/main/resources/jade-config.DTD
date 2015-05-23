@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<!ELEMENT jade-config (catalog*)>
+
+<!ELEMENT catalog (default-dbname?, table*)>
+<!ATTLIST catalog id ID #REQUIRED>
+
+<!ELEMENT table (dbname?, db-partitions?, table-partitions?)>
+<!ATTLIST table name CDATA #REQUIRED>
+
+<!ELEMENT db-partitions (hash|range|round|direct|hex-hash)>
+
+<!ELEMENT table-partitions (hash|range|round|direct|hex-hash)>
+
+<!ELEMENT hash (by-column, partitions, target-pattern)>
+
+<!ELEMENT range (by-column, target-pattern)>
+
+<!ELEMENT round (partitions, target-pattern)>
+
+<!ELEMENT direct (by-column?, target-pattern)>
+
+<!ELEMENT hex-hash (by-column, partitions, target-pattern)>
+
+<!ELEMENT default-dbname (#PCDATA)>
+
+<!ELEMENT dbname (#PCDATA)>
+
+<!ELEMENT by-column (#PCDATA)>
+
+<!ELEMENT partitions (#PCDATA)>
+
+<!ELEMENT target-pattern (#PCDATA)>

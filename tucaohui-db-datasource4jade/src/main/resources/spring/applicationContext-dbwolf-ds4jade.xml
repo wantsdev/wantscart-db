@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-2.5.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
+	default-autowire="no">
+
+	<bean id="jade.simpleSQLInterpreter" class="cn.techwolf.jade.provider.jdbc.SimpleSQLInterpreter" />
+
+	<!--
+	<bean id="dbWolfConfig"
+		class="cn.techwolf.dbwolf.client.config.PlaceholderDbWolfConfig">
+		<property name="endpoints" value="${zk_registry}" />
+		<property name="zkRoot" value="${dbwolf_zkroot}" />
+	</bean>
+-->
+
+	<bean id="jade.routingConfigurator"
+		class="cn.techwolf.dbwolf.jade.datasource.configurator.DbwolfClasspathXmlDocConfigurator">
+		<constructor-arg value="${jadeConfigPath}"/>
+	</bean>
+
+	<bean id="jade.routerInterpreter" class="cn.techwolf.jade.datasource.RouterInterpreter">
+		<property name="configurator" ref="jade.routingConfigurator" />
+	</bean>
+
+	<bean id="dbAgent" class="cn.techwolf.dbwolf.client.FileDbAgent">
+		<constructor-arg value="${dbConfigPath}"/>
+	</bean>
+<!--
+	<bean id="dbAgent" class="cn.techwolf.dbwolf.client.ZkDbAgent">
+		<constructor-arg ref="dbWolfConfig"/>
+	</bean>
+-->
+	<bean id="jade.dataSourceFactory"
+		class="cn.techwolf.dbwolf.jade.datasource.DbwolfDataSourceFactory">
+		<property name="dbAgent" ref="dbAgent"/>
+	</bean>
+
+	<bean id="jade.jdbcDataAccessProvider"
+		class="cn.techwolf.dbwolf.jade.provider.DbwolfJdbcDataAccessProvider">
+		<property name="interpreter" ref="jade.routerInterpreter" />
+		<property name="dataSourceFactory" ref="jade.dataSourceFactory" />
+	</bean>
+
+	<bean id="jade.dataAccessProvider" class="cn.techwolf.jade.core.JadeDataAccessProvider">
+		<property name="targetAccessProvider" ref="jade.jdbcDataAccessProvider" />
+	</bean>
+
+</beans>

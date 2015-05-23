@@ -1,0 +1,6 @@
+<instance name="reform_test" type="singler" timestamp="2009-08-17 10:34:56">
+	<server type="mysql" database="reform_test" host="10.2.5.65" port="3306" user="testuser" password="testpwd2011"
+		wrflag="wr" charset="utf8" priority=""></server>
+	<server type="mysql" database="reform_test" host="10.2.5.65" port="3306" user="testuser" password="testpwd2011"
+		wrflag="r" charset="utf8" priority=""></server>
+</instance>
