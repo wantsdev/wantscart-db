@@ -1,0 +1,21 @@
+package com.tucaohui.dbwolf.zookeeper;
+
+import com.tucaohui.dbwolf.zookeeper.exception.ZKDataSerializeException;
+
+/**
+ * 对象序列化。
+ * 
+ * @param <T>
+ */
+public interface DataSerializer<T> {
+
+    /**
+     * 序列化.
+     * 
+     * @param obj
+     * @return
+     * @throws ZKDataSerializeException
+     */
+    byte[] serialize(final T obj) throws ZKDataSerializeException;
+
+}
