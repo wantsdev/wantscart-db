@@ -1,8 +1,9 @@
 package com.tucaohui.dbwolf.client.ds;
 
+import com.tucaohui.dbwolf.xml.DbServerConfig;
+
 import javax.sql.DataSource;
 
-import cn.techwolf.dbwolf.xml.DbServerConfig;
 
 /**
  * jdbc数据源工厂.

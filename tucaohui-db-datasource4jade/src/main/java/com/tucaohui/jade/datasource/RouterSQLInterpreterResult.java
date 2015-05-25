@@ -1,6 +1,7 @@
 package com.tucaohui.jade.datasource;
 
-import cn.techwolf.jade.provider.SQLInterpreterResult;
+
+import com.tucaohui.jade.provider.SQLInterpreterResult;
 
 public class RouterSQLInterpreterResult implements SQLInterpreterResult {
 

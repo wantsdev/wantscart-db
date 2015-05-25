@@ -1,8 +1,8 @@
 package com.tucaohui.dbwolf.jade.datasource;
 
-import cn.techwolf.dbwolf.client.DbAgent;
-import cn.techwolf.jade.annotation.DAO;
-import cn.techwolf.jade.datasource.DataSourceFactory;
+import com.tucaohui.dbwolf.client.DbAgent;
+import com.tucaohui.jade.annotation.DAO;
+import com.tucaohui.jade.datasource.DataSourceFactory;
 import com.tucaohui.jade.datasource.XnDataSource;
 
 import javax.sql.DataSource;

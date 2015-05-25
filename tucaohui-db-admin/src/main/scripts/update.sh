@@ -14,4 +14,4 @@ if ! test -d $LOG_PATH
 	then mkdir $LOG_PATH
 fi
 
-java -cp $CLASS_PATH -DLOG_FILE=$LOG_FILE cn.techwolf.dbwolf.admin.UpdateDb "$@" 
+java -cp $CLASS_PATH -DLOG_FILE=$LOG_FILE UpdateDb "$@"

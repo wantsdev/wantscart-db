@@ -1,17 +1,18 @@
 package com.tucaohui.dbwolf.jade.datasource.configurator;
 
-import cn.techwolf.dbwolf.zookeeper.ZKClient;
+import com.tucaohui.dbwolf.zookeeper.ZKClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.core.io.ClassPathResource;
 
 /**
  * Created by liujun on 15/5/23.
  */
 public class DbwolfClasspathXmlDocConfigurator extends DbwolfXmlDocConfigurator {
 
-
-
     private static final Log log = LogFactory.getLog(DbwolfMemZkXmlDocConfigurator.class);
+
+    private static final String DEFAULT_PATH = "jade/jade-config.xml";
 
     /**
      * 与zookeeper的连接.
@@ -21,8 +22,9 @@ public class DbwolfClasspathXmlDocConfigurator extends DbwolfXmlDocConfigurator 
     private String jadeConfigPath;
 
     public DbwolfClasspathXmlDocConfigurator() {
-        this(null);
+        this(DEFAULT_PATH);
     }
+
 
     public DbwolfClasspathXmlDocConfigurator(String jadeConfigPath) {
         this.jadeConfigPath = jadeConfigPath;
@@ -30,13 +32,16 @@ public class DbwolfClasspathXmlDocConfigurator extends DbwolfXmlDocConfigurator 
     }
 
     /**
-     *
      * @return
      */
     private void retriveJadeConfig() {
         try {
 
-            byte[] jadeConfig = null;
+            ClassPathResource classPathResource = new ClassPathResource(jadeConfigPath);
+            int size = classPathResource.getInputStream().available();
+            byte[] jadeConfig = new byte[size];
+
+            classPathResource.getInputStream().read(jadeConfig);
             if (jadeConfig != null) {
                 this.setJadeConfigContent(jadeConfig);
                 if (logger.isDebugEnabled()) {

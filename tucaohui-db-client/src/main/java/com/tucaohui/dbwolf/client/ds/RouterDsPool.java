@@ -1,8 +1,8 @@
 package com.tucaohui.dbwolf.client.ds;
 
 import com.tucaohui.dbwolf.client.DbAgent;
-import cn.techwolf.dbwolf.xml.DbInstanceConfig;
-import cn.techwolf.dbwolf.xml.RouteConfig;
+import com.tucaohui.dbwolf.xml.DbInstanceConfig;
+import com.tucaohui.dbwolf.xml.RouteConfig;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

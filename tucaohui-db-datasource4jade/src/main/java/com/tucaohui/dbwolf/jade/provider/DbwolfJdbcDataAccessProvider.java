@@ -4,11 +4,11 @@
  */
 package com.tucaohui.dbwolf.jade.provider;
 
+import com.tucaohui.jade.provider.SQLInterpreter;
+import com.tucaohui.jade.provider.jdbc.JdbcDataAccessProvider;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import cn.techwolf.jade.provider.SQLInterpreter;
-import cn.techwolf.jade.provider.jdbc.JdbcDataAccessProvider;
 
 /**
  * @author <a href="mailto:zhangtao@techwolf.cn">Kylen Zhang</a>

@@ -1,7 +1,7 @@
 package com.tucaohui.dbwolf.client.ds;
 
 import com.tucaohui.dbwolf.client.DbAgent;
-import cn.techwolf.dbwolf.xml.DbInstanceConfig;
+import com.tucaohui.dbwolf.xml.DbInstanceConfig;
 
 /**
  * dbwolf数据源工厂，根据配置类型来创建路由数据源或单实例数据源。

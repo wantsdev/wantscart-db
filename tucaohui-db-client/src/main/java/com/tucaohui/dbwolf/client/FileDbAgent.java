@@ -2,8 +2,8 @@ package com.tucaohui.dbwolf.client;
 
 import com.tucaohui.dbwolf.client.ds.StormDataSourcePool;
 import com.tucaohui.dbwolf.client.ds.StormDsPoolFactory;
-import cn.techwolf.dbwolf.xml.DbInstanceConfig;
-import cn.techwolf.dbwolf.xml.DbInstanceConfigDeserializer;
+import com.tucaohui.dbwolf.xml.DbInstanceConfig;
+import com.tucaohui.dbwolf.xml.DbInstanceConfigDeserializer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -22,6 +22,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * 
  */
 public final class FileDbAgent implements DbAgent {
+
+    private static final String DEFAULT_PATH = "jade/db.xml";
 
     //======================== static ===========================//
 
@@ -46,6 +48,10 @@ public final class FileDbAgent implements DbAgent {
 
     private String path;
 
+    public FileDbAgent() {
+        this(DEFAULT_PATH);
+    }
+
     //==================== constructor =========================//
     /**
      * 创建一个实例.
@@ -53,6 +59,7 @@ public final class FileDbAgent implements DbAgent {
     public FileDbAgent(String filepath) {
         this.connectionManager = new ConnectionManager(this);
         path = filepath;
+
     }
 
     //===================== public =========================//

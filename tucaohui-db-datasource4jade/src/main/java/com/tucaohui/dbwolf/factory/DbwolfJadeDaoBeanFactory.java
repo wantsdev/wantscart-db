@@ -1,13 +1,13 @@
 package com.tucaohui.dbwolf.factory;
 
+import com.tucaohui.jade.core.JadeDaoFactoryBean;
+import com.tucaohui.jade.core.JadeDataAccessProvider;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import cn.techwolf.jade.core.JadeDaoFactoryBean;
-import cn.techwolf.jade.core.JadeDataAccessProvider;
 
 /**
  * 

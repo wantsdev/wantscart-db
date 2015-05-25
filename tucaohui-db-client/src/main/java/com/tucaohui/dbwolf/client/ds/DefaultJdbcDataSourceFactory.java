@@ -1,14 +1,13 @@
 package com.tucaohui.dbwolf.client.ds;
 
-import java.sql.SQLException;
-
-import javax.sql.DataSource;
-
+import com.tucaohui.dbwolf.xml.DbServerConfig;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import cn.techwolf.dbwolf.xml.DbServerConfig;
+import javax.sql.DataSource;
+import java.sql.SQLException;
+
 
 /**
  * 默认的jdbc数据源工厂实现. 使用dbcp作为数据源.

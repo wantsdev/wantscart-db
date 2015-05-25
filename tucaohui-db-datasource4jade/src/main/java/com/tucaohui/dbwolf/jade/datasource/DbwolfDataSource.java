@@ -1,9 +1,9 @@
 package com.tucaohui.dbwolf.jade.datasource;
 
-import cn.techwolf.dbwolf.client.ConnectionManager;
-import cn.techwolf.dbwolf.client.DbAgent;
-import cn.techwolf.jade.annotation.UseMaster;
-import cn.techwolf.jade.core.SQLThreadLocal;
+import com.tucaohui.dbwolf.client.ConnectionManager;
+import com.tucaohui.dbwolf.client.DbAgent;
+import com.tucaohui.jade.annotation.UseMaster;
+import com.tucaohui.jade.core.SQLThreadLocal;
 import com.tucaohui.jade.datasource.XnDataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

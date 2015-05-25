@@ -2,11 +2,11 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
-	
 	<parent>
 		<artifactId>tucaohui-db</artifactId>
-		<groupId>cn.techwolf</groupId>
-		<version>2.1.2</version>
+		<groupId>com.tucaohui</groupId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../</relativePath>
 	</parent>
 	<artifactId>tucaohui-db-admin</artifactId>
 	<packaging>jar</packaging>
@@ -70,11 +70,6 @@
 						<goals>
 							<goal>jar</goal>
 						</goals>
-						<configuration>
-							<classifier>${project.version}</classifier>
-							<jarName>tucaohui-db-admin</jarName>
-							<outputDirectory>target/assemble/source</outputDirectory>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -121,7 +116,6 @@
 					<filters>
 						<filter>${basedir}/src/main/filters/filter-${env}.properties</filter>
 					</filters>
-					<includeBaseDirectory>true</includeBaseDirectory>
 					<descriptors>
 						<descriptor>src/main/assembly/assembly.xml</descriptor>
 					</descriptors>

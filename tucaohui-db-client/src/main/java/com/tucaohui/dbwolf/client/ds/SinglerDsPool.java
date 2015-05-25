@@ -1,12 +1,12 @@
 package com.tucaohui.dbwolf.client.ds;
 
+import com.tucaohui.dbwolf.xml.DbInstanceConfig;
+import com.tucaohui.dbwolf.xml.DbServerConfig;
+
+import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.sql.DataSource;
-
-import cn.techwolf.dbwolf.xml.DbInstanceConfig;
-import cn.techwolf.dbwolf.xml.DbServerConfig;
 
 /**
  * 单实例数据源配置.

@@ -1,10 +1,10 @@
 package com.tucaohui.dbwolf.jade.datasource.configurator;
 
-import cn.techwolf.dbwolf.client.config.DbWolfConfig;
-import cn.techwolf.dbwolf.zookeeper.DataDeserializer;
-import cn.techwolf.dbwolf.zookeeper.DataListener;
-import cn.techwolf.dbwolf.zookeeper.ZKClient;
-import cn.techwolf.dbwolf.zookeeper.exception.ZKDataDeserializeException;
+import com.tucaohui.dbwolf.client.config.DbWolfConfig;
+import com.tucaohui.dbwolf.zookeeper.DataDeserializer;
+import com.tucaohui.dbwolf.zookeeper.DataListener;
+import com.tucaohui.dbwolf.zookeeper.ZKClient;
+import com.tucaohui.dbwolf.zookeeper.exception.ZKDataDeserializeException;
 import com.tucaohui.jade.datasource.configurator.XmlDocConfigurator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -91,7 +91,7 @@ public class DbwolfLocalZkXmlDocConfigurator extends XmlDocConfigurator {
     /**
      * 监听Jade配置.
      *
-     * @param db
+     * @param
      */
     private void watchJadeConfig() {
         final String path = JADE_CONFIG_PATH;

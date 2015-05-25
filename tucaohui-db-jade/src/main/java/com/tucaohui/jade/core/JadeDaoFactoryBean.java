@@ -15,16 +15,15 @@
  */
 package com.tucaohui.jade.core;
 
-import java.lang.reflect.Proxy;
-
+import com.tucaohui.jade.provider.DataAccess;
+import com.tucaohui.jade.provider.DataAccessProvider;
+import com.tucaohui.jade.provider.Definition;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
-import com.tucaohui.jade.provider.DataAccess;
-import com.tucaohui.jade.provider.DataAccessProvider;
-import com.tucaohui.jade.provider.Definition;
+import java.lang.reflect.Proxy;
 
 /**
  * 提供 DAO 对象的 Spring-framework {@link FactoryBean} 工厂。

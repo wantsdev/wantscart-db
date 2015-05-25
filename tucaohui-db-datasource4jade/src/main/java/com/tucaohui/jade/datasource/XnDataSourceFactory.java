@@ -1,11 +1,8 @@
 package com.tucaohui.jade.datasource;
 
+import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.sql.DataSource;
-
-import cn.techwolf.jade.datasource.DataSourceFactory;
 
 /**
  * 
