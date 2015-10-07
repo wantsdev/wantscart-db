@@ -89,7 +89,11 @@ public class Modifier {
     }
 
     public Class<?> getReturnType() {
-        return method.getReturnType();
+        Class<?> returnType = method.getReturnType();
+        if(returnType == Object.class && definition.getDAOGenericsClazz() != null){
+            returnType = definition.getDAOGenericsClazz();
+        }
+        return returnType;
     }
 
     public Class<?>[] getGenericReturnTypes() {

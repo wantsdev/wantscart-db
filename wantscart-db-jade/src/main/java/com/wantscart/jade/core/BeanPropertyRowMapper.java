@@ -24,7 +24,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.util.Assert;
 
-import java.beans.PropertyDescriptor;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -75,7 +74,7 @@ public class BeanPropertyRowMapper implements RowMapper {
     private final Class<?> mappedClass;
 
     /** Map of the fields we provide mapping for */
-    private Map<String, PropertyDescriptor> mappedFields;
+    private Map<String, TableSchema.Column> mappedFields;
 
     private final boolean checkColumns;
 
@@ -101,27 +100,35 @@ public class BeanPropertyRowMapper implements RowMapper {
     /**
      * Initialize the mapping metadata for the given class.
      * 
-     * @param mappedClass the mapped class.
      */
     protected void initialize() {
-        this.mappedFields = new HashMap<String, PropertyDescriptor>();
-        PropertyDescriptor[] pds = BeanUtils.getPropertyDescriptors(mappedClass);
+        this.mappedFields = new HashMap<String, TableSchema.Column>();
+//        PropertyDescriptor[] pds = BeanUtils.getPropertyDescriptors(mappedClass);
+        TableSchema schema = TableSchema.getSchema(mappedClass);
+        TableSchema.Columns columns = schema.getColumns();
         if (checkProperties) {
             mappedProperties = new HashSet<String>();
         }
-        for (int i = 0; i < pds.length; i++) {
-            PropertyDescriptor pd = pds[i];
-            if (pd.getWriteMethod() != null) {
+        TableSchema.Column pk = schema.getPk();
+        if(pk != null){
+            if(checkProperties){
+                this.mappedProperties.add(pk.getName());
+            }
+            this.mappedFields.put(pk.getName().toLowerCase(), pk);
+        }
+        for (int i = 0; i < columns.size(); i++) {
+            TableSchema.Column column = columns.get(i);
+            if (column.getSetter() != null) {
                 if (checkProperties) {
-                    this.mappedProperties.add(pd.getName());
+                    this.mappedProperties.add(column.getName());
                 }
-                this.mappedFields.put(pd.getName().toLowerCase(), pd);
-                for (String underscoredName : underscoreName(pd.getName())) {
-                    if (underscoredName != null
-                            && !pd.getName().toLowerCase().equals(underscoredName)) {
-                        this.mappedFields.put(underscoredName, pd);
-                    }
-                }
+                this.mappedFields.put(column.getName().toLowerCase(), column);
+//                for (String underscoredName : underscoreName(pd.getName())) {
+//                    if (underscoredName != null
+//                            && !pd.getName().toLowerCase().equals(underscoredName)) {
+//                        this.mappedFields.put(underscoredName, pd);
+//                    }
+//                }
             }
         }
     }
@@ -193,30 +200,30 @@ public class BeanPropertyRowMapper implements RowMapper {
         Set<String> populatedProperties = (checkProperties ? new HashSet<String>() : null);
 
         for (int index = 1; index <= columnCount; index++) {
-            String column = JdbcUtils.lookupColumnName(rsmd, index).toLowerCase();
-            PropertyDescriptor pd = this.mappedFields.get(column);
-            if (pd != null) {
+            String columnName = JdbcUtils.lookupColumnName(rsmd, index).toLowerCase();
+            TableSchema.Column col = this.mappedFields.get(columnName);
+            if (col != null) {
                 try {
-                    Object value = JdbcUtils.getResultSetValue(rs, index, pd.getPropertyType());
+                    Object value = JdbcUtils.getResultSetValue(rs, index, (Class<?>) col.getType());
                     if (debugEnabled && rowNumber == 0) {
-                        logger.debug("Mapping column '" + column + "' to property '" + pd.getName()
-                                + "' of type " + pd.getPropertyType());
+                        logger.debug("Mapping column '" + columnName + "' to property '" + col.getName()
+                                + "' of type " + col.getType());
                     }
-                    bw.setPropertyValue(pd.getName(), value);
+                    bw.setPropertyValue(col.getOriginName(), value);
                     if (populatedProperties != null) {
-                        populatedProperties.add(pd.getName());
+                        populatedProperties.add(col.getName());
                     }
                 } catch (NotWritablePropertyException ex) {
-                    throw new DataRetrievalFailureException("Unable to map column " + column
-                            + " to property " + pd.getName(), ex);
+                    throw new DataRetrievalFailureException("Unable to map column " + columnName
+                            + " to property " + col.getOriginName(), ex);
                 }
             } else {
                 if (checkColumns) {
-                    throw new InvalidDataAccessApiUsageException("Unable to map column '" + column
+                    throw new InvalidDataAccessApiUsageException("Unable to map column '" + columnName
                             + "' to any properties of bean " + this.mappedClass.getName());
                 }
                 if (warnEnabled && rowNumber == 0) {
-                    logger.warn("Unable to map column '" + column + "' to any properties of bean "
+                    logger.warn("Unable to map column '" + columnName + "' to any properties of bean "
                             + this.mappedClass.getName());
                 }
             }

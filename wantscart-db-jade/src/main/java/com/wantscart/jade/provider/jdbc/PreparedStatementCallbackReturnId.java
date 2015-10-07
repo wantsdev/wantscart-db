@@ -15,17 +15,17 @@
  */
 package com.wantscart.jade.provider.jdbc;
 
-import java.lang.reflect.Array;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import org.apache.commons.lang.ClassUtils;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.jdbc.support.JdbcUtils;
+
+import java.lang.reflect.Array;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * 实现返回新生成主键的 {@link PreparedStatementCallback} 实现。
@@ -61,7 +61,7 @@ public class PreparedStatementCallbackReturnId implements PreparedStatementCallb
         }
         this.wrappedIdType = idType;
         this.mapper = new SingleColumnRowMapper(idType);
-        if (wrappedIdType != Integer.class && wrappedIdType != Long.class) {
+        if (wrappedIdType != Integer.class && wrappedIdType != Long.class && wrappedIdType != Number.class) {
             throw new IllegalArgumentException(
                     "wrong return type(int/long type or its array type only): " + returnType);
         }

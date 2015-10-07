@@ -19,6 +19,7 @@ import com.wantscart.jade.annotation.SQL;
 import com.wantscart.jade.annotation.SQLType;
 import com.wantscart.jade.provider.DataAccess;
 import com.wantscart.jade.provider.Modifier;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.util.Assert;
 
@@ -26,13 +27,13 @@ import java.util.regex.Pattern;
 
 /**
  * 实现创建: {@link JadeOperation} 的工厂。
- * 
+ *
  * @author han.liao
  */
 public class JadeOperationFactoryImpl implements JadeOperationFactory {
 
-    private static Pattern[] SELECT_PATTERNS = new Pattern[] {
-    //
+    private static Pattern[] SELECT_PATTERNS = new Pattern[]{
+            //
             Pattern.compile("^\\s*SELECT\\s+", Pattern.CASE_INSENSITIVE), //
             Pattern.compile("^\\s*SHOW\\s+", Pattern.CASE_INSENSITIVE), //
             Pattern.compile("^\\s*DESC\\s+", Pattern.CASE_INSENSITIVE), //
@@ -50,6 +51,15 @@ public class JadeOperationFactoryImpl implements JadeOperationFactory {
 
         String sqlString = sql.value();
         SQLType sqlType = sql.type();
+
+        if (sqlType == SQLType.TEMPLATE) {
+            TableSchema schema = TableSchema.getSchema(modifier.getDefinition().getDAOGenericsClazz());
+            for (String T : TableSchema.ALL_TEMPLATE) {
+                sqlString = StringUtils.replace(sqlString, T, schema.getByTemplate(T));
+            }
+            sqlType = SQLType.AUTO_DETECT;
+        }
+
         if (sqlType == SQLType.AUTO_DETECT) {
             for (int i = 0; i < SELECT_PATTERNS.length; i++) {
                 // 用正则表达式匹配  SELECT 语句

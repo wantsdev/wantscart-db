@@ -16,60 +16,80 @@
 package com.wantscart.jade.provider;
 
 import com.wantscart.jade.core.GenericUtils;
+import org.apache.commons.lang.ArrayUtils;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Map;
 
 
 /**
  * 提供 Definition 包装对 DAO 的定义。<br/>
- * 
+ * <p/>
  * {@link Definition#constants}
  * Map对象包括了类的所有接口属性、所有父类和自己的静态常量，非静态常量不包括在该Map中。
- * 
+ *
  * @author 王志亮 [qieqie.wang@gmail.com]
  * @author 廖涵 [in355hz@gmail.com]
  */
 public class Definition {
 
-	private final Class<?> clazz;
+    private final Class<?> clazz;
 
-	private final Map<String, ?> constants;
+    private final Class<?> genericsClazz;
 
-	public Definition(Class<?> clazz) {
-		this.clazz = clazz;
-		this.constants = Collections.unmodifiableMap( // NL
-				GenericUtils.getConstantFrom(clazz, true, true));
-	}
+    private final Map<String, ?> constants;
 
-	public String getName() {
-		return clazz.getName();
-	}
+    public Definition(Class<?> clazz) {
+        this.clazz = clazz;
+        Type[] genTypes = clazz.getGenericInterfaces();
+        if(ArrayUtils.isNotEmpty(genTypes)){
+            Type[] params = ((ParameterizedType) genTypes[0]).getActualTypeArguments();
+            if (params.length > 0) {
+                this.genericsClazz = (Class<?>) params[0];
+            }else {
+                this.genericsClazz = null;
+            }
+        }else {
+            this.genericsClazz = null;
+        }
+        this.constants = Collections.unmodifiableMap( // NL
+                GenericUtils.getConstantFrom(clazz, true, true));
+    }
 
-	public Map<String, ?> getConstants() {
-		return constants;
-	}
+    public String getName() {
+        return clazz.getName();
+    }
 
-	public Class<?> getDAOClazz() {
-		return clazz;
-	}
+    public Map<String, ?> getConstants() {
+        return constants;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof Definition) {
-			Definition definition = (Definition) obj;
-			return clazz.equals(definition.clazz);
-		}
-		return false;
-	}
+    public Class<?> getDAOClazz() {
+        return clazz;
+    }
 
-	@Override
-	public int hashCode() {
-		return clazz.hashCode() * 13;
-	}
+    public Class<?> getDAOGenericsClazz() {
+        return genericsClazz;
+    }
 
-	@Override
-	public String toString() {
-		return clazz.getName();
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Definition) {
+            Definition definition = (Definition) obj;
+            return clazz.equals(definition.clazz);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return clazz.hashCode() * 13;
+    }
+
+    @Override
+    public String toString() {
+        return clazz.getName();
+    }
 }

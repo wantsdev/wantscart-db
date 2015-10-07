@@ -41,4 +41,10 @@ public enum SQLType {
      */
     AUTO_DETECT,
 
+    /**
+     * added by chuang.zhang
+     * 模板类型，Jade会根据规则替换模板SQL中的内容
+     * */
+    TEMPLATE,
+
 }

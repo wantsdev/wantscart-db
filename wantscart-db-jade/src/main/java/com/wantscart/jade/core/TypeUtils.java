@@ -1,11 +1,12 @@
 package com.wantscart.jade.core;
 
+import org.springframework.util.ClassUtils;
+
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.util.Date;
-
-import org.springframework.util.ClassUtils;
 
 public class TypeUtils {
 
@@ -17,5 +18,21 @@ public class TypeUtils {
                 || columnTypeCandidate == BigDecimal.class // NL
                 || columnTypeCandidate == Blob.class // NL
                 || columnTypeCandidate == Clob.class;
+    }
+
+    public static boolean isBaseType(Class clazz) {
+        return clazz.equals(String.class) ||
+                clazz.equals(Integer.class) ||
+                clazz.equals(Byte.class) ||
+                clazz.equals(Long.class) ||
+                clazz.equals(Double.class) ||
+                clazz.equals(Float.class) ||
+                clazz.equals(Character.class) ||
+                clazz.equals(Short.class) ||
+                clazz.equals(BigDecimal.class) ||
+                clazz.equals(BigInteger.class) ||
+                clazz.equals(Boolean.class) ||
+                clazz.equals(Date.class) ||
+                clazz.isPrimitive();
     }
 }
