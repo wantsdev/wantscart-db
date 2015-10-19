@@ -76,7 +76,7 @@ public class JadeScannerConfigurer implements BeanDefinitionRegistryPostProcesso
         if (!prcs.isEmpty() && applicationContext instanceof GenericApplicationContext) {
             BeanDefinition mapperScannerBean = ((GenericApplicationContext) applicationContext)
                     .getBeanFactory().getBeanDefinition(beanName);
-            mapperScannerBean.getPropertyValues().add("basePackage", "com.wantscart.*.dao");
+            mapperScannerBean.getPropertyValues().add("basePackage", "com.wantscart.*.dao.jade");
             // PropertyResourceConfigurer does not expose any methods to explicitly perform
             // property placeholder substitution. Instead, create a BeanFactory that just
             // contains this mapper scanner and post process the factory.

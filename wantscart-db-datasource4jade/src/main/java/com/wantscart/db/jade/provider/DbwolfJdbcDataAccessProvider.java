@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
  * Initial created at 2014年3月13日下午4:02:13
  *
  */
-@Component
+@Component("jade.jdbcDataAccessProvider")
 public class DbwolfJdbcDataAccessProvider extends JdbcDataAccessProvider {
 
     protected static final Log logger = LogFactory.getLog(DbwolfJdbcDataAccessProvider.class);

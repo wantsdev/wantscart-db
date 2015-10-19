@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -124,7 +125,6 @@ public class ExqlCompiler {
                     // 创建 $expr 形式的子句, 作为拼接处理
                     units.add(new JoinExprUnit(expr));
                 } else {
-
                     // 创建 :expr 形式的子句
                     units.add(new ExprUnit(expr));
                 }

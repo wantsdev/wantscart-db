@@ -18,8 +18,11 @@ package com.wantscart.jade.core;
 import com.wantscart.jade.provider.DataAccess;
 import com.wantscart.jade.provider.DataAccessProvider;
 import com.wantscart.jade.provider.Definition;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
@@ -32,13 +35,15 @@ import java.lang.reflect.Proxy;
  * @author 廖涵 [in355hz@gmail.com]
  * 
  */
-public class JadeDaoFactoryBean<T> implements FactoryBean, InitializingBean {
+public class JadeDaoFactoryBean<T> implements FactoryBean, InitializingBean, ApplicationContextAware {
 
     private T dao;
 
     private Class<T> daoClass;
 
     protected DataAccessProvider dataAccessProvider;
+
+    protected ApplicationContext applicationContext;
 
     public void setDaoClass(Class<T> daoClass) {
         this.daoClass = daoClass;
@@ -71,7 +76,7 @@ public class JadeDaoFactoryBean<T> implements FactoryBean, InitializingBean {
     protected T createDAO(Class<T> daoClass) {
         Definition definition = new Definition(daoClass);
         DataAccess dataAccess = dataAccessProvider.createDataAccess(daoClass);
-        JadeDaoInvocationHandler handler = new JadeDaoInvocationHandler(dataAccess, definition);
+        JadeDaoInvocationHandler handler = new JadeDaoInvocationHandler(applicationContext, dataAccess, definition);
         return (T) Proxy.newProxyInstance(ClassUtils.getDefaultClassLoader(),
                 new Class[] { daoClass }, handler);
     }
@@ -86,4 +91,8 @@ public class JadeDaoFactoryBean<T> implements FactoryBean, InitializingBean {
         return true;
     }
 
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
 }

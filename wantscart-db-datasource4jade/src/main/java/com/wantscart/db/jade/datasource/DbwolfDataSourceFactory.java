@@ -11,10 +11,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 
  * @author <a href="mailto:zhangtao@techwolf.cn">Kylen Zhang</a> Initial
  *         created at 2014年3月11日下午1:59:40
- * 
  */
 @Component
 public class DbwolfDataSourceFactory implements DataSourceFactory {
@@ -26,6 +24,10 @@ public class DbwolfDataSourceFactory implements DataSourceFactory {
     @Override
     public DataSource getDataSource(Class<?> daoClass) {
         String catalog = daoClass.getAnnotation(DAO.class).catalog();
+        return getDataSource(catalog);
+    }
+
+    public DataSource getDataSource(String catalog) {
         DataSource dataSource = null;
         if (catalog != null && catalog.length() > 0) {
             dataSource = cached.get(catalog);

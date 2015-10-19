@@ -3,6 +3,7 @@ package com.wantscart.jade.core;
 import com.wantscart.jade.annotation.Alias;
 import com.wantscart.jade.annotation.JadeExpose;
 import com.wantscart.jade.annotation.PrimaryKey;
+import com.wantscart.jade.annotation.Serializable;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.springframework.beans.BeanUtils;
@@ -37,6 +38,8 @@ public class TableSchema {
 
     private static final Map<Class, TableSchema> schemas = new ConcurrentHashMap<Class, TableSchema>();
 
+    private Map<Method, Column> methodCallHoder = new ConcurrentHashMap<Method, Column>();
+
     private Map<String, String> templateHolder = new ConcurrentHashMap<String, String>();
 
     private String tableName;
@@ -49,44 +52,58 @@ public class TableSchema {
         this.columns = new Columns();
     }
 
+    public Column getColumnOnCall(Method m) {
+        Column callColumn = methodCallHoder.get(m);
+        if (callColumn == null) {
+            for (Column column : columns) {
+                if ((column.getSetter() != null && column.getSetter().equals(m)) || (column.getGetter() != null && column.getGetter().equals(m))) {
+                    methodCallHoder.put(m, column);
+                    callColumn = column;
+                    break;
+                }
+            }
+        }
+        return callColumn;
+    }
+
     public String getByTemplate(String templateName) {
         String val = templateHolder.get(templateName);
-        if(StringUtils.isBlank(val)){
+        if (StringUtils.isBlank(val)) {
             if (TEMPLATE_TABLE.equals(templateName)) {
                 val = getTableName();
-            } else if(TEMPLATE_PK.equals(templateName)){
+            } else if (TEMPLATE_PK.equals(templateName)) {
                 val = getPk().getName();
-            }else if (TEMPLATE_COLUMN_KEYS.equals(templateName)) {
+            } else if (TEMPLATE_COLUMN_KEYS.equals(templateName)) {
                 StringBuilder sb = new StringBuilder();
                 Iterator<Column> itr = columns.iterator();
-                while (itr.hasNext()){
+                while (itr.hasNext()) {
                     Column column = itr.next();
                     sb.append(column.getName());
-                    if(itr.hasNext()){
+                    if (itr.hasNext()) {
                         sb.append(", ");
                     }
                 }
                 val = sb.toString();
-            }else if (TEMPLATE_COLUMN_VALS.equals(templateName)) {
+            } else if (TEMPLATE_COLUMN_VALS.equals(templateName)) {
                 StringBuilder sb = new StringBuilder();
                 Iterator<Column> itr = columns.iterator();
-                while (itr.hasNext()){
+                while (itr.hasNext()) {
                     Column column = itr.next();
                     sb.append(":_t.").append(column.getName());
-                    if(itr.hasNext()){
+                    if (itr.hasNext()) {
                         sb.append(", ");
                     }
                 }
                 val = sb.toString();
-            }else if (TEMPLATE_COLUMN_PAIRS.equals(templateName)) {
+            } else if (TEMPLATE_COLUMN_PAIRS.equals(templateName)) {
                 StringBuilder sb = new StringBuilder();
                 Iterator<Column> itr = columns.iterator();
-                while (itr.hasNext()){
+                while (itr.hasNext()) {
                     Column column = itr.next();
                     sb.append(column.getName());
                     sb.append("=");
                     sb.append(":_t.").append(column.getName());
-                    if(itr.hasNext()){
+                    if (itr.hasNext()) {
                         sb.append(", ");
                     }
                 }
@@ -119,7 +136,7 @@ public class TableSchema {
                     Column pk = new Column();
                     pk.setName(pd.getName());
                     pk.setOriginName(pd.getName());
-                    if(f.isAnnotationPresent(Alias.class)){
+                    if (f.isAnnotationPresent(Alias.class)) {
                         Alias alias = f.getAnnotation(Alias.class);
                         pk.setName(alias.value());
                     }
@@ -127,7 +144,6 @@ public class TableSchema {
                     pk.setSetter(pd.getWriteMethod());
                     pk.setPk(true);
                     schema.setPk(pk);
-                    continue;
                 } else {
                     f.setAccessible(true);
                     Column column = new Column();
@@ -136,9 +152,13 @@ public class TableSchema {
                     }
                     column.setName(pd.getName());
                     column.setOriginName(pd.getName());
-                    if(f.isAnnotationPresent(Alias.class)){
+                    if (f.isAnnotationPresent(Alias.class)) {
                         Alias alias = f.getAnnotation(Alias.class);
                         column.setName(alias.value());
+                    }
+                    if (f.isAnnotationPresent(Serializable.class)) {
+                        Serializable serializable = f.getAnnotation(Serializable.class);
+                        column.setSerializer(Serializer.Provider.getSerizlizer(serializable.serialzer()));
                     }
                     column.setSetter(pd.getWriteMethod());
                     column.setGetter(pd.getReadMethod());
@@ -187,6 +207,8 @@ public class TableSchema {
         private Method getter;
 
         private Method setter;
+
+        private Serializer serializer;
 
         private boolean pk;
 
@@ -247,6 +269,14 @@ public class TableSchema {
 
         public void setOriginName(String originName) {
             this.originName = originName;
+        }
+
+        public Serializer getSerializer() {
+            return serializer;
+        }
+
+        public void setSerializer(Serializer serializer) {
+            this.serializer = serializer;
         }
     }
 

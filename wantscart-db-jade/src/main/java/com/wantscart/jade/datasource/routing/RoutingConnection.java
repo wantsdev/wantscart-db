@@ -69,12 +69,12 @@ public class RoutingConnection implements Connection {
     private String password;
 
     /**
-     * 在实际数据库连接获取之前，存储{@link #setAutoCommit(boolean)参数}
+     * 在实际数据库连接获取之前，存储{@link #setAutoCommit(boolean)} 参数
      */
     private Boolean autoCommit;
 
     /**
-     * 在实际数据库连接获取之前，存储{@link #setReadOnly(boolean)参数}
+     * 在实际数据库连接获取之前，存储{@link #setReadOnly(boolean)} 参数
      */
     private Boolean readOnly;
 
@@ -85,7 +85,7 @@ public class RoutingConnection implements Connection {
      */
     private String catalog;
 
-    /** 在实际数据库连接获取之前，存储{@link #setTypeMap(Map)参数} */
+    /** 在实际数据库连接获取之前，存储{@link #setTypeMap(Map)} 参数*/
     private Map<String, Class<?>> typeMap = Collections.emptyMap();
 
     /**

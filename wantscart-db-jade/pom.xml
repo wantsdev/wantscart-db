@@ -15,10 +15,20 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<dependencies>
+		<!--<dependency>-->
+			<!--<groupId>commons-jexl</groupId>-->
+			<!--<artifactId>commons-jexl</artifactId>-->
+			<!--<version>1.1</version>-->
+		<!--</dependency>-->
 		<dependency>
-			<groupId>commons-jexl</groupId>
+			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-jexl</artifactId>
-			<version>1.1</version>
+			<version>2.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.3.1</version>
 		</dependency>
 	</dependencies>
 		<build>

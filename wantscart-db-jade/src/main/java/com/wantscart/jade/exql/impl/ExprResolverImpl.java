@@ -1,19 +1,24 @@
 package com.wantscart.jade.exql.impl;
 
+import com.wantscart.jade.exql.ExprResolver;
+import org.apache.commons.jexl2.Expression;
+import org.apache.commons.jexl2.JexlContext;
+import org.apache.commons.jexl2.JexlEngine;
+import org.apache.commons.jexl2.MapContext;
+import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.wantscart.jade.exql.ExprResolver;
-import org.apache.commons.jexl.Expression;
-import org.apache.commons.jexl.ExpressionFactory;
-import org.apache.commons.jexl.JexlContext;
-import org.apache.commons.jexl.JexlHelper;
-import org.apache.commons.lang.math.NumberUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+//import org.apache.commons.jexl.Expression;
+//import org.apache.commons.jexl.ExpressionFactory;
+//import org.apache.commons.jexl.JexlContext;
+//import org.apache.commons.jexl.JexlHelper;
 
 /**
  * 默认使用: Apache Common Jexl引擎实现表达式处理。<br/>
@@ -51,17 +56,16 @@ public class ExprResolverImpl implements ExprResolver {
     protected final Map<String, Object> mapConsts = new HashMap<String, Object>();
 
     // Common Jexl 上下文
-    protected final JexlContext context = JexlHelper.createContext();
+    protected final JexlContext context = new MapContext();
+
+    private static final JexlEngine engine = new JexlEngine();
 
     /**
      * 构造表达式处理器。
      */
-    @SuppressWarnings("unchecked")
     public ExprResolverImpl() {
-        @SuppressWarnings("rawtypes")
-        Map map = context.getVars();
-        map.put(VAR_PREFIX, mapVars);
-        map.put(CONST_PREFIX, mapConsts);
+        context.set(VAR_PREFIX, mapVars);
+        context.set(CONST_PREFIX, mapConsts);
     }
 
     /**
@@ -209,7 +213,7 @@ public class ExprResolverImpl implements ExprResolver {
             }
 
             // 编译表达式
-            expr = ExpressionFactory.createExpression(builder.toString());
+            expr = engine.createExpression(builder.toString());
             cache.putIfAbsent(expression2, expr);
         }
 

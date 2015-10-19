@@ -7,7 +7,6 @@ import com.wantscart.jade.core.SQLThreadLocal;
 import com.wantscart.jade.datasource.XnDataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.util.Assert;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -15,7 +14,6 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.util.logging.Logger;
 
 /**
- * 
  * @author <a href="mailto:tao.zhang@renren-inc.com">Kylen Zhang</a>
  *         Initial created at 2012-10-23 下午05:04:06
  */
@@ -26,7 +24,7 @@ public class DbwolfDataSource extends XnDataSource {
     private DbwolfDataSourceFactory dsFactory;
 
     private ConnectionManager connectionManager;
-    
+
     public DbwolfDataSource() {
 
     }
@@ -39,23 +37,26 @@ public class DbwolfDataSource extends XnDataSource {
 
     public Connection getConnection() throws SQLException {
         SQLThreadLocal local = SQLThreadLocal.get();
-        Assert.notNull(local, "this is jade's bug; class SQLThreadLocalWrapper "
-                + "should override all the DataAccess interface methods.");
-        boolean write = false;
-        if (local.isWriteType()) {
-            write = true;
-        } else if (local.getModifier().getMethod().isAnnotationPresent(UseMaster.class)) {
-            write = true;
-        }
-        String pattern = (String) local.getParameters().get(DB_PATTERN);
-        if (pattern == null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("not found DB_PATTERN, using default patter '' for SQL '"
-                        + local.getSql() + "'");
-            }
-            pattern = EMPTY_PATTERN;
-        }
         Connection conn;
+        boolean write = false;
+        String pattern = EMPTY_PATTERN;
+        if (local == null) {
+            write = true;
+        } else {
+            if (local.isWriteType()) {
+                write = true;
+            } else if (local.getModifier().getMethod().isAnnotationPresent(UseMaster.class)) {
+                write = true;
+            }
+            pattern = (String) local.getParameters().get(DB_PATTERN);
+            if (pattern == null) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("not found DB_PATTERN, using default patter '' for SQL '"
+                            + local.getSql() + "'");
+                }
+                pattern = EMPTY_PATTERN;
+            }
+        }
         if (write) {
             conn = connectionManager.getWriteConnection(getBizName(), pattern);
         } else {
@@ -86,6 +87,6 @@ public class DbwolfDataSource extends XnDataSource {
     public Logger getParentLogger() throws SQLFeatureNotSupportedException {
         throw new UnsupportedOperationException();
     }
-    
-    
+
+
 }
