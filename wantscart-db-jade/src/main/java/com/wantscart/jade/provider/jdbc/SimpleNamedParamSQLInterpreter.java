@@ -63,7 +63,10 @@ public class SimpleNamedParamSQLInterpreter implements SQLInterpreter {
                 Object bean = parameters.get(name.substring(0, find));
                 if (bean != null) {
                     BeanWrapper beanWrapper = new BeanWrapperImpl(bean);
-                    value = beanWrapper.getPropertyValue(name.substring(find + 1));
+                    String propertyName = name.substring(find + 1);
+                    value = beanWrapper.getPropertyValue(propertyName);
+
+                    beanWrapper.getPropertyDescriptor(propertyName);
                 }
 
             } else {

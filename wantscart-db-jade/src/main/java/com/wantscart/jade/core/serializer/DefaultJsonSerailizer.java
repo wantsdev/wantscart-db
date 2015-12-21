@@ -17,11 +17,6 @@ public class DefaultJsonSerailizer implements Serializer<Object> {
     public Object serialize(Object object) {
         if (object != null) {
             object = JsonUtil.toJson(object);
-//            if(object instanceof Timestamp){
-//                object = new Date(((Timestamp)object).getTime());
-//            }
-//                object = Json.toJson(object);
-//            }
         }
         return object;
     }
@@ -33,5 +28,10 @@ public class DefaultJsonSerailizer implements Serializer<Object> {
             object = JsonUtil.fromJson(object.toString(), type);
         }
         return object;
+    }
+
+    @Override
+    public Class columnType() {
+        return String.class;
     }
 }

@@ -16,5 +16,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface Serializable {
+
     Class<? extends Serializer> serialzer() default DefaultJsonSerailizer.class;
 }

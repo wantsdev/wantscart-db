@@ -36,30 +36,30 @@ import java.util.Set;
  * {@link RowMapper} implementation that converts a row into a new instance
  * of the specified mapped target class. The mapped target class must be a
  * top-level class and it must have a default or no-arg constructor.
- * 
- * <p>
+ * <p/>
+ * <p/>
  * Column values are mapped based on matching the column name as obtained
  * from result set metadata to public setters for the corresponding
  * properties. The names are matched either directly or by transforming a
  * name separating the parts with underscores to the same name using
  * "camel" case.
- * 
- * <p>
+ * <p/>
+ * <p/>
  * Mapping is provided for fields in the target class for many common
  * types, e.g.: String, boolean, Boolean, byte, Byte, short, Short, int,
  * Integer, long, Long, float, Float, double, Double, BigDecimal,
  * <code>java.util.Date</code>, etc.
- * 
- * <p>
+ * <p/>
+ * <p/>
  * To facilitate mapping between columns and fields that don't have
  * matching names, try using column aliases in the SQL statement like
  * "select fname as first_name from customer".
- * 
- * <p>
+ * <p/>
+ * <p/>
  * Please note that this class is designed to provide convenience rather
  * than high performance. For best performance consider using a custom
  * RowMapper.
- * 
+ *
  * @author Thomas Risberg
  * @author Juergen Hoeller
  * @author 王志亮 [qieqie.wang@gmail.com]
@@ -67,26 +67,34 @@ import java.util.Set;
  */
 public class BeanPropertyRowMapper implements RowMapper {
 
-    /** Logger available to subclasses */
+    /**
+     * Logger available to subclasses
+     */
     protected final Log logger = LogFactory.getLog(getClass());
 
-    /** The class we are mapping to */
+    /**
+     * The class we are mapping to
+     */
     private final Class<?> mappedClass;
 
-    /** Map of the fields we provide mapping for */
+    /**
+     * Map of the fields we provide mapping for
+     */
     private Map<String, TableSchema.Column> mappedFields;
 
     private final boolean checkColumns;
 
     private final boolean checkProperties;
 
-    /** Set of bean properties we provide mapping for */
+    /**
+     * Set of bean properties we provide mapping for
+     */
     private Set<String> mappedProperties;
 
     /**
      * Create a new BeanPropertyRowMapper, accepting unpopulated properties
      * in the target bean.
-     * 
+     *
      * @param mappedClass the class that each row should be mapped to
      */
     public BeanPropertyRowMapper(Class<?> mappedClass, boolean checkColumns, boolean checkProperties) {
@@ -99,7 +107,6 @@ public class BeanPropertyRowMapper implements RowMapper {
 
     /**
      * Initialize the mapping metadata for the given class.
-     * 
      */
     protected void initialize() {
         this.mappedFields = new HashMap<String, TableSchema.Column>();
@@ -110,8 +117,8 @@ public class BeanPropertyRowMapper implements RowMapper {
             mappedProperties = new HashSet<String>();
         }
         TableSchema.Column pk = schema.getPk();
-        if(pk != null){
-            if(checkProperties){
+        if (pk != null) {
+            if (checkProperties) {
                 this.mappedProperties.add(pk.getName());
             }
             this.mappedFields.put(pk.getName().toLowerCase(), pk);
@@ -137,7 +144,7 @@ public class BeanPropertyRowMapper implements RowMapper {
      * Convert a name in camelCase to an underscored name in lower case.
      * Any upper case letters are converted to lower case with a preceding
      * underscore.
-     * 
+     *
      * @param camelCaseName the string containing original name
      * @return the converted name
      */
@@ -175,14 +182,14 @@ public class BeanPropertyRowMapper implements RowMapper {
             }
             digitFound = false;
         }
-        return new String[] { name, name2 };
+        return new String[]{name, name2};
     }
 
     /**
      * Extract the values for all columns in the current row.
-     * <p>
+     * <p/>
      * Utilizes public setters and result set metadata.
-     * 
+     *
      * @see java.sql.ResultSetMetaData
      */
     public Object mapRow(ResultSet rs, int rowNumber) throws SQLException {
@@ -204,10 +211,13 @@ public class BeanPropertyRowMapper implements RowMapper {
             TableSchema.Column col = this.mappedFields.get(columnName);
             if (col != null) {
                 try {
-                    Object value = JdbcUtils.getResultSetValue(rs, index, (Class<?>) col.getType());
+                    Object value = JdbcUtils.getResultSetValue(rs, index, (Class<?>) col.getColumnType());
                     if (debugEnabled && rowNumber == 0) {
                         logger.debug("Mapping column '" + columnName + "' to property '" + col.getName()
                                 + "' of type " + col.getType());
+                    }
+                    if (col.getSerializer() != null) {
+                        value = col.getSerializer().deserialize(value, col.getType());
                     }
                     bw.setPropertyValue(col.getOriginName(), value);
                     if (populatedProperties != null) {
@@ -240,7 +250,6 @@ public class BeanPropertyRowMapper implements RowMapper {
     }
 
     /**
-     * 
      * @param clazz
      * @return
      * @throws BeanInstantiationException

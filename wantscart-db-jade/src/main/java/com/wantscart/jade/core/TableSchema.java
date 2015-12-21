@@ -278,6 +278,13 @@ public class TableSchema {
         public void setSerializer(Serializer serializer) {
             this.serializer = serializer;
         }
+
+        public Type getColumnType() {
+            if (serializer != null) {
+                return serializer.columnType();
+            }
+            return type;
+        }
     }
 
     public static class Columns extends LinkedList<Column> {
