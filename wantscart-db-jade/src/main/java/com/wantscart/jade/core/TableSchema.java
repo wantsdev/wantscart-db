@@ -34,6 +34,8 @@ public class TableSchema {
 
     public static final String TEMPLATE_COLUMN_PAIRS = ":COLUMN_PAIRS";
 
+    public static final String TEMPLATE_COLUMN_ALL = TEMPLATE_PK + ", " + TEMPLATE_COLUMN_KEYS;
+
     public static final String[] ALL_TEMPLATE = new String[]{TEMPLATE_TABLE, TEMPLATE_PK, TEMPLATE_COLUMN_KEYS, TEMPLATE_COLUMN_VALS, TEMPLATE_COLUMN_PAIRS};
 
     private static final Map<Class, TableSchema> schemas = new ConcurrentHashMap<Class, TableSchema>();
@@ -124,7 +126,19 @@ public class TableSchema {
                 if (pd.getName().equals("class") || pd.getWriteMethod() == null || pd.getReadMethod() == null) {
                     continue;
                 }
-                Field f = FieldUtils.getDeclaredField(type, pd.getName(), true);
+                Field f = null;
+
+
+                for (Class<?> clazz = type; clazz != Object.class; clazz = clazz.getSuperclass()) {
+                    try {
+                        f = FieldUtils.getDeclaredField(clazz, pd.getName(), true);
+                        if(f != null){
+                            break;
+                        }
+                    } catch (Exception e) {
+                        //do nothing
+                    }
+                }
 
                 if (f == null) {
                     //todo log warning
@@ -150,7 +164,7 @@ public class TableSchema {
                     if (f.isAnnotationPresent(JadeExpose.class)) {
                         continue;
                     }
-                    column.setName(pd.getName());
+                    column.setName(translate(pd.getName()));
                     column.setOriginName(pd.getName());
                     if (f.isAnnotationPresent(Alias.class)) {
                         Alias alias = f.getAnnotation(Alias.class);

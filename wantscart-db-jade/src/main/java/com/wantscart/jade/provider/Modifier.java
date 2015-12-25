@@ -50,7 +50,13 @@ public class Modifier {
         this.definition = definition;
         this.method = method;
 
-        genericReturnTypes = GenericUtils.getActualClass(method.getGenericReturnType());
+        Class<?>[] grts = GenericUtils.getActualClass(method.getGenericReturnType());
+
+        if((grts== null || grts == GenericUtils.EMPTY_CLASSES || grts[0] == null) && definition.getDAOGenericsClazz() != null){
+            grts = new Class[1];
+            grts[0] = definition.getDAOGenericsClazz();
+        }
+        genericReturnTypes = grts;
 
         Annotation[][] annotations = method.getParameterAnnotations();
         parameterCount = annotations.length;

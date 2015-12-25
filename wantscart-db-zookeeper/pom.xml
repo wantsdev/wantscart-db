@@ -87,7 +87,7 @@
 							<goal>jar</goal>
 						</goals>
 						<configuration>
-							<finalName>tucaohui-db-zookeeper-${project.version}</finalName>
+							<finalName>wantscart-db-zookeeper-${project.version}</finalName>
 							<jarOutputDirectory>${project.build.directory}/assemble/javadoc</jarOutputDirectory>
 							<outputDirectory>${project.build.directory}/assemble/apidocs</outputDirectory>
 						</configuration>
@@ -107,7 +107,7 @@
 						</goals>
 						<configuration>
 							<classifier>${project.version}</classifier>
-							<jarName>tucaohui-db-zookeeper</jarName>
+							<jarName>wantscart-db-zookeeper</jarName>
 							<outputDirectory>target/assemble/jar</outputDirectory>
 						</configuration>
 					</execution>
