@@ -91,7 +91,7 @@ public class TableSchema {
                 Iterator<Column> itr = columns.iterator();
                 while (itr.hasNext()) {
                     Column column = itr.next();
-                    sb.append(":_t.").append(column.getName());
+                    sb.append(":_t.").append(column.getOriginName());
                     if (itr.hasNext()) {
                         sb.append(", ");
                     }
@@ -104,7 +104,7 @@ public class TableSchema {
                     Column column = itr.next();
                     sb.append(column.getName());
                     sb.append("=");
-                    sb.append(":_t.").append(column.getName());
+                    sb.append(":_t.").append(column.getOriginName());
                     if (itr.hasNext()) {
                         sb.append(", ");
                     }

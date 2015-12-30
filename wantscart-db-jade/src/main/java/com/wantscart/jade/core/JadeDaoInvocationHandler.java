@@ -23,14 +23,12 @@ import com.wantscart.jade.provider.Definition;
 import com.wantscart.jade.provider.Modifier;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.context.ApplicationContext;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author 王志亮 [qieqie.wang@gmail.com]
@@ -57,22 +55,21 @@ public class JadeDaoInvocationHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-//        if (args != null) {
-//            for (int i = 0; i < args.length; i++) {
-//                Object arg = args[i];
-//                if (arg == null) {
-//                    continue;
-//                }
-//                Class<?> argType = arg.getClass();
-//                if (!TypeUtils.isBaseType(argType) && !(arg instanceof Collection)) {
-//                    ProxyFactory proxyFactory = new ProxyFactory(arg);
-//                    proxyFactory.addAdvice(new SerializableInvocationHandler(argType));
-//                    proxyFactory.setOpaque();
-//                    arg = proxyFactory.getProxy();
-//                    args[i] = arg;
-//                }
-//            }
-//        }
+        if (args != null) {
+            for (int i = 0; i < args.length; i++) {
+                Object arg = args[i];
+                if (arg == null) {
+                    continue;
+                }
+                Class<?> argType = arg.getClass();
+                if (!TypeUtils.isBaseType(argType) && !(arg instanceof Collection)) {
+                    ProxyFactory proxyFactory = new ProxyFactory(arg);
+                    proxyFactory.addAdvice(new SerializableInvocationHandler(argType));
+                    arg = proxyFactory.getProxy();
+                    args[i] = arg;
+                }
+            }
+        }
         if (logger.isDebugEnabled()) {
             logger
                     .debug("invoking  " + definition.getDAOClazz().getName() + "#"

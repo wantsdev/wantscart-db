@@ -2,10 +2,7 @@ package com.wantscart.jade.core;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-
-import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import org.springframework.aop.framework.ProxyFactory;
 
 /**
  * User: chuang.zhang
@@ -13,8 +10,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * Time: 15:01
  */
 public class SerializableInvocationHandler implements MethodInterceptor {
-
-    private Map<Method, Boolean> sCache = new ConcurrentHashMap<Method, Boolean>();
 
     private Class<?> clazz;
 
@@ -24,24 +19,14 @@ public class SerializableInvocationHandler implements MethodInterceptor {
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
-        Method method = invocation.getMethod();
-        Object proxy = invocation.getThis();
-        Object[] args = invocation.getArguments();
-        Object result = method.invoke(proxy, args);
-        if (!sCache.containsKey(method)) {
-            TableSchema schema = TableSchema.getSchema(clazz);
-            TableSchema.Column column = schema.getColumnOnCall(method);
-            sCache.put(method, column.getSerializer() != null);
-        }
-        if (sCache.get(method)) {
-            TableSchema schema = TableSchema.getSchema(clazz);
-            TableSchema.Column column = schema.getColumnOnCall(method);
-            Serializer serializer = column.getSerializer();
-            if (method.equals(column.getGetter())) {
-                result = serializer.serialize(result);
-            } else if (method.equals(column.getSetter())) {
-                result = serializer.deserialize(result, column.getType());
-            }
+        Object result = invocation.proceed();
+        TableSchema schema = TableSchema.getSchema(clazz);
+        TableSchema.Column column = schema.getColumnOnCall(invocation.getMethod());
+        if (column != null && column.getGetter().equals(invocation.getMethod()) && column.getSerializer() != null) {
+            ProxyFactory proxyFactory = new ProxyFactory(result);
+            proxyFactory.addInterface(Serializer.class);
+            proxyFactory.addAdvice(new SerializableColumnHandler(column, result));
+            result = proxyFactory.getProxy();
         }
         return result;
     }

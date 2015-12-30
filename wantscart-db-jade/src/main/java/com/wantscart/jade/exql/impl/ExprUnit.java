@@ -1,9 +1,13 @@
 package com.wantscart.jade.exql.impl;
 
+import com.wantscart.jade.core.SerializableColumnHandler;
+import com.wantscart.jade.core.Serializer;
 import com.wantscart.jade.exql.ExprResolver;
 import com.wantscart.jade.exql.ExqlContext;
 import com.wantscart.jade.exql.ExqlUnit;
 import com.wantscart.jade.exql.util.ExqlUtils;
+
+import java.lang.reflect.Proxy;
 
 /**
  * 输出表达式内容的语句单元, 例如: ':expr' 或者: '#(:expr)' 形式的表达式。
@@ -38,6 +42,12 @@ public class ExprUnit implements ExqlUnit {
 
         // 解释表达式内容
         Object obj = exprResolver.executeExpr(expr);
+
+        if(obj instanceof Proxy){
+            if(obj instanceof Serializer){
+                obj = ((Serializer) obj).serialize(obj);
+            }
+        }
 
         // 输出转义的对象内容
         exqlContext.fillValue(obj);
