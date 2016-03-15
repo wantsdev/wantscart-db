@@ -6,6 +6,7 @@ import com.wantscart.jade.annotation.SQLParam;
 import com.wantscart.jade.annotation.SQLType;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: chuang.zhang
@@ -28,7 +29,7 @@ public interface BaseDAO<T> {
     T get(@SQLParam("_id") Number id);
 
     @SQL(value = "SELECT " + TableSchema.TEMPLATE_PK + ", " + TableSchema.TEMPLATE_COLUMN_KEYS + " FROM " + TableSchema.TEMPLATE_TABLE + " WHERE " + TableSchema.TEMPLATE_PK + " IN (:_ids)", type = SQLType.TEMPLATE)
-    List<T> gets(@SQLParam("_ids") List<Number> ids);
+    Map<Number, T> gets(@SQLParam("_ids") List<Number> ids);
 
     @SQL(value = "SELECT COUNT(" + TableSchema.TEMPLATE_PK + ") FROM " + TableSchema.TEMPLATE_TABLE, type = SQLType.TEMPLATE)
     long count();
