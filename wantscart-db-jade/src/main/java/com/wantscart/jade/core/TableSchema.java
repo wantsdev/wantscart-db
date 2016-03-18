@@ -50,6 +50,8 @@ public class TableSchema {
 
     private Column pk;
 
+    private boolean filedSerializable;
+
     private TableSchema() {
         this.columns = new Columns();
     }
@@ -132,7 +134,7 @@ public class TableSchema {
                 for (Class<?> clazz = type; clazz != Object.class; clazz = clazz.getSuperclass()) {
                     try {
                         f = FieldUtils.getDeclaredField(clazz, pd.getName(), true);
-                        if(f != null){
+                        if (f != null) {
                             break;
                         }
                     } catch (Exception e) {
@@ -173,10 +175,13 @@ public class TableSchema {
                     if (f.isAnnotationPresent(Serializable.class)) {
                         Serializable serializable = f.getAnnotation(Serializable.class);
                         column.setSerializer(Serializer.Provider.getSerizlizer(serializable.serialzer()));
+                        column.setSerializable(true);
+                        schema.setFiledSerializable(true);
                     }
                     column.setSetter(pd.getWriteMethod());
                     column.setGetter(pd.getReadMethod());
                     column.setType(pd.getPropertyType());
+                    column.setGenericType(f.getGenericType());
                     column.setPk(false);
                     schema.columns.add(column);
                 }
@@ -210,6 +215,14 @@ public class TableSchema {
         this.pk = pk;
     }
 
+    public boolean isFiledSerializable() {
+        return filedSerializable;
+    }
+
+    public void setFiledSerializable(boolean filedSerializable) {
+        this.filedSerializable = filedSerializable;
+    }
+
     public static class Column {
 
         private String name;
@@ -218,11 +231,15 @@ public class TableSchema {
 
         private Type type;
 
+        private Type genericType;
+
         private Method getter;
 
         private Method setter;
 
         private Serializer serializer;
+
+        private boolean serializable;
 
         private boolean pk;
 
@@ -251,6 +268,14 @@ public class TableSchema {
         public void setType(Type type) {
             this.type = type;
             setBaseType(TypeUtils.isBaseType((Class) type));
+        }
+
+        public Type getGenericType() {
+            return genericType;
+        }
+
+        public void setGenericType(Type genericType) {
+            this.genericType = genericType;
         }
 
         public boolean isBaseType() {
@@ -285,12 +310,23 @@ public class TableSchema {
             this.originName = originName;
         }
 
+        public boolean isSerializable() {
+            return serializable;
+        }
+
+        public void setSerializable(boolean serializable) {
+            this.serializable = serializable;
+        }
+
         public Serializer getSerializer() {
             return serializer;
         }
 
         public void setSerializer(Serializer serializer) {
             this.serializer = serializer;
+            if (serializer != null) {
+                setSerializable(true);
+            }
         }
 
         public Type getColumnType() {

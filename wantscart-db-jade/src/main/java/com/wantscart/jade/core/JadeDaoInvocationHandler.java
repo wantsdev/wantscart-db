@@ -63,10 +63,13 @@ public class JadeDaoInvocationHandler implements InvocationHandler {
                 }
                 Class<?> argType = arg.getClass();
                 if (!TypeUtils.isBaseType(argType) && !(arg instanceof Collection)) {
-                    ProxyFactory proxyFactory = new ProxyFactory(arg);
-                    proxyFactory.addAdvice(new SerializableInvocationHandler(argType));
-                    arg = proxyFactory.getProxy();
-                    args[i] = arg;
+                    TableSchema schema = TableSchema.getSchema(argType);
+                    if(schema != null && schema.isFiledSerializable()){
+                        ProxyFactory proxyFactory = new ProxyFactory(arg);
+                        proxyFactory.addAdvice(new SerializableInvocationHandler(argType));
+                        arg = proxyFactory.getProxy();
+                        args[i] = arg;
+                    }
                 }
             }
         }

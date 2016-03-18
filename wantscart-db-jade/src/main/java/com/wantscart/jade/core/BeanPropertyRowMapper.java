@@ -15,6 +15,7 @@
  */
 package com.wantscart.jade.core;
 
+import com.wantscart.jade.core.serializer.NullSerializer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.*;
@@ -216,8 +217,15 @@ public class BeanPropertyRowMapper implements RowMapper {
                         logger.debug("Mapping column '" + columnName + "' to property '" + col.getName()
                                 + "' of type " + col.getType());
                     }
-                    if (col.getSerializer() != null) {
-                        value = col.getSerializer().deserialize(value, col.getType());
+                    if (col.isSerializable()) {
+                        if (col.getSerializer().getClass() != NullSerializer.class) {
+                            value = col.getSerializer().deserialize(value, col.getGenericType() != null ? col.getGenericType() : col.getType());
+                        } else {
+                            Serializable instance = (Serializable) BeanUtils.instantiateClass((Class) col.getType());
+                            instance.deserialize(value);
+                            value = instance;
+                        }
+
                     }
                     bw.setPropertyValue(col.getOriginName(), value);
                     if (populatedProperties != null) {

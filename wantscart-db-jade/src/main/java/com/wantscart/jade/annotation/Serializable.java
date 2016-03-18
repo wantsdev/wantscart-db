@@ -1,7 +1,7 @@
 package com.wantscart.jade.annotation;
 
 import com.wantscart.jade.core.Serializer;
-import com.wantscart.jade.core.serializer.DefaultJsonSerailizer;
+import com.wantscart.jade.core.serializer.NullSerializer;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -17,5 +17,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface Serializable {
 
-    Class<? extends Serializer> serialzer() default DefaultJsonSerailizer.class;
+    Class<? extends Serializer> serialzer() default NullSerializer.class;
 }

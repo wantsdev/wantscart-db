@@ -1,5 +1,6 @@
 package com.wantscart.jade.core;
 
+import com.wantscart.jade.core.serializer.NullSerializer;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
@@ -23,7 +24,12 @@ public class SerializableColumnHandler implements MethodInterceptor {
     public Object invoke(MethodInvocation invocation) throws Throwable {
         Object result = object;
         if (invocation.getMethod().getName().equals("serialize")) {
-            result = column.getSerializer().serialize(result);
+            if(column.getSerializer() instanceof NullSerializer && result instanceof Serializable){
+                result = ((Serializable) result).serialize();
+            } else {
+                result = column.getSerializer().serialize(result);
+            }
+
         }
         return result;
     }

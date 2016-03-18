@@ -15,19 +15,9 @@
  */
 package com.wantscart.jade.core;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.wantscart.jade.annotation.RowHandler;
-import com.wantscart.jade.core.mapper.ArrayRowMapper;
-import com.wantscart.jade.core.mapper.ListRowMapper;
-import com.wantscart.jade.core.mapper.MapEntryRowMapper;
-import com.wantscart.jade.core.mapper.SetRowMapper;
+import com.wantscart.jade.core.mapper.*;
 import com.wantscart.jade.provider.Modifier;
-import com.wantscart.jade.core.mapper.MapEntryColumnRowMapper;
 import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,6 +25,8 @@ import org.springframework.beans.BeanInstantiationException;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
+
+import java.util.*;
 
 /**
  * 支持DAO方法返回类型：
@@ -114,7 +106,7 @@ public class RowMapperFactoryImpl implements RowMapperFactory {
             } else if (rowType == Set.class) {
                 rowMapper = new SetRowMapper(modifier);
             } else {
-                boolean checkColumns = (rowHandler == null) ? true : rowHandler.checkColumns();
+                boolean checkColumns = (rowHandler == null) ? false : rowHandler.checkColumns();
                 boolean checkProperties = (rowHandler == null) ? false : rowHandler
                         .checkProperties();
                 String key = rowType.getName() + "[checkColumns=" + checkColumns

@@ -34,13 +34,13 @@ public @interface RowHandler {
     Class<? extends RowMapper> rowMapper() default ByDefault.class;
 
     /**
-     * 这是一个检查开关,默认为true；
+     * 这是一个检查开关,默认为false；
      * <p>
      * true代表如果不是所有列都被映射给一个 Bean 的属性，抛出异常。
      * 
      * @return
      */
-    boolean checkColumns() default true;
+    boolean checkColumns() default false;
 
     /**
      * 这是一个检查开关，默认为false; true代表如果不是每一个bean 属性都设置了SQL查询结果的值，抛出异常。
