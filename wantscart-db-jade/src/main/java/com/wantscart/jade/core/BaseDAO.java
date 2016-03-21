@@ -33,7 +33,7 @@ public interface BaseDAO<T> {
     @SQL(value = "SELECT COUNT(" + TableSchema.TEMPLATE_PK + ") FROM " + TableSchema.TEMPLATE_TABLE, type = SQLType.TEMPLATE)
     long count();
 
-    @SQL(value = "SELECT " + TableSchema.TEMPLATE_PK + ", " + TableSchema.TEMPLATE_COLUMN_KEYS + " FROM " + TableSchema.TEMPLATE_TABLE + " LIMIT :_offset,:_limit", type = SQLType.TEMPLATE)
+    @SQL(value = "SELECT " + TableSchema.TEMPLATE_PK + ", " + TableSchema.TEMPLATE_COLUMN_KEYS + " FROM " + TableSchema.TEMPLATE_TABLE + " ORDER BY " + TableSchema.TEMPLATE_PK + " DESC LIMIT :_offset,:_limit", type = SQLType.TEMPLATE)
     List<T> list(@SQLParam("_offset") long offset, @SQLParam("_limit") int limit);
 
 }
