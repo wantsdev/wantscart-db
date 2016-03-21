@@ -3,6 +3,7 @@ package com.wantscart.jade.core.serializer;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.CollectionUtils;
 
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -40,6 +41,9 @@ public class EntityListSerailizer extends EntitySerailizer {
     @Override
     public Object deserialize(Object serialized, Type type) {
         List list = new ArrayList();
+        if(type instanceof ParameterizedType){
+            type = ((ParameterizedType) type).getActualTypeArguments()[0];
+        }
         if (serialized != null) {
             String[] parts = StringUtils.split(serialized.toString(), SPLITOR);
             for (String part : parts) {
