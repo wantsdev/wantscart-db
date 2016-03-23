@@ -18,6 +18,7 @@ package com.wantscart.jade.core;
 import com.wantscart.jade.annotation.DAO;
 import com.wantscart.jade.annotation.SQL;
 import com.wantscart.jade.annotation.SQLParam;
+import com.wantscart.jade.core.serializer.NullSerializer;
 import com.wantscart.jade.provider.DataAccess;
 import com.wantscart.jade.provider.Definition;
 import com.wantscart.jade.provider.Modifier;
@@ -64,11 +65,20 @@ public class JadeDaoInvocationHandler implements InvocationHandler {
                 Class<?> argType = arg.getClass();
                 if (!TypeUtils.isBaseType(argType) && !(arg instanceof Collection)) {
                     TableSchema schema = TableSchema.getSchema(argType);
-                    if(schema != null && schema.isFiledSerializable()){
-                        ProxyFactory proxyFactory = new ProxyFactory(arg);
-                        proxyFactory.addAdvice(new SerializableInvocationHandler(argType));
-                        arg = proxyFactory.getProxy();
-                        args[i] = arg;
+                    if(schema != null){
+                        Map mapArg = new HashMap();
+                        for(TableSchema.Column column : schema.getColumns()){
+                            Object field = column.getGetter().invoke(arg);
+                            if(column.isSerializable()){
+                                if(column.getSerializer() instanceof NullSerializer && field instanceof Serializable){
+                                    field = ((Serializable) field).serialize();
+                                } else {
+                                    field = column.getSerializer().serialize(field);
+                                }
+                            }
+                            mapArg.put(column.getOriginName(), field);
+                        }
+                        args[i] = mapArg;
                     }
                 }
             }
