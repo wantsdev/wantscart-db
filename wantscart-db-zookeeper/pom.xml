@@ -57,6 +57,7 @@
 						</goals>
 						<configuration>
 							<sources>
+								<additionalparam>-Xdoclint:none</additionalparam>
 								<source>src/main/java</source>
 							</sources>
 						</configuration>
@@ -87,6 +88,7 @@
 							<goal>jar</goal>
 						</goals>
 						<configuration>
+							<additionalparam>-Xdoclint:none</additionalparam>
 							<finalName>wantscart-db-zookeeper-${project.version}</finalName>
 							<jarOutputDirectory>${project.build.directory}/assemble/javadoc</jarOutputDirectory>
 							<outputDirectory>${project.build.directory}/assemble/apidocs</outputDirectory>
